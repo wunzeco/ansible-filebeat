@@ -1,0 +1,10 @@
+---
+
+- name: Validate filebeat config
+  shell: >
+    {{ filebeat_bin_dir }}/filebeat \
+        -c {{ filebeat_conf_dir }}/filebeat.yml \
+        -e -configtest
+
+- name: Restart filebeat
+  service: name=filebeat state=restarted

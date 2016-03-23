@@ -1,0 +1,46 @@
+############################# Filebeat ######################################
+filebeat:
+  # List of prospectors to fetch data.
+  prospectors:
+{% for prospector in filebeat_prospectors %}
+    -
+{# I want to keep path at the top #}
+{% if prospector.path|default(false) %}
+      path:
+{% for p in prospector.path %}
+        - "{{ p }}"
+{% endfor %}
+{% endif -%}
+
+{% for pkey,pvalue in prospector.iteritems() %}
+
+{%- if pkey == "path" %}
+{# skip if pkey is path #}
+{% elif pvalue is string or pvalue is number %}
+      {{ pkey }}: {{ pvalue }}
+{# Check if pvalue a list #}
+{% elif pvalue is iterable and pvalue is not mapping %}
+      {{ pkey }}:
+{% for v in pvalue %}
+        - "{{ v }}"
+{% endfor %}
+{# Check if pvalue a dict #}
+{% elif pvalue is mapping %}
+      {{ pkey }}:
+{% for k,v in pvalue.iteritems() %}
+        {{ k }}: {{ v }}
+{% endfor %}
+{% else %}
+      {{ pkey }}: {{ pvalue }}
+{% endif -%}
+
+{% endfor %}
+
+{% endfor %}
+
+  # General filebeat configuration options
+  #
+{% for gkey,gvalue in filebeat_general_opts.iteritems() %}
+  {{ gkey }}: {{ gvalue }}
+{% endfor %}
+

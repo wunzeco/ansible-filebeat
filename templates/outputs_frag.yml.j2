@@ -1,0 +1,54 @@
+###############################################################################
+############################# Libbeat Config ##################################
+# Base config file used by all other beats for using libbeat features
+
+############################# Output ##########################################
+
+# Configure what outputs to use when sending the data collected by the beat.
+# Multiple outputs may be used.
+output:
+{% for output,opts in filebeat_outputs.iteritems() %}
+
+  ### {{ output }} as output
+  {{ output }}:
+{# I want to keep hosts opt at the top #}
+{% if opts.hosts|default(false) %}
+    hosts:
+{% for h in opts.hosts %}
+      - {{ h }}
+{% endfor %}
+{% endif -%}
+
+{% for key,value in opts.iteritems() %}
+      
+{%- if key == "hosts" %}
+{# skip hosts opt in this loop #}
+{% elif value is string or value is number %}
+    {{ key }}: {{ value }}
+{# Check if value a list #}
+{% elif value is iterable and value is not mapping %}
+    {{ key }}:
+{% for v in value %}
+      - "{{ v }}"
+{% endfor %}
+{# Check if value a dict #}
+{% elif value is mapping %}
+    {{ key }}:
+{% for k,v in value.iteritems() %}
+{% if v is string or v is number or v is not iterable %}
+      {{ k }}: {{ v }}
+{% else %}
+      {{ k }}: 
+{% for i in v %}
+        - {{ i }} 
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% else %}
+    {{ key }}: {{ value }}
+{% endif -%}
+
+{% endfor %}
+
+{% endfor %}
+

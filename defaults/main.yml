@@ -1,0 +1,232 @@
+---
+filebeat_bin_dir:   /usr/bin
+filebeat_pid_dir:   /var/run
+filebeat_conf_dir:  /etc/filebeat
+filebeat_data_dir:  /var/lib/filebeat
+filebeat_conf_fragments_dir: /var/tmp/filebeat
+
+
+############
+##  Package
+#filebeat_version: 1.1.2
+filebeat_signing_key_url: "https://packages.elasticsearch.org/GPG-KEY-elasticsearch"
+filebeat_apt_repo: "deb https://packages.elastic.co/beats/apt stable main"
+
+
+###########
+##  Config
+filebeat_prospectors:                 # See below for example config options
+  - paths: [ "/var/log/*.log" ]
+  - paths: [ "/var/log/myapp.log" ]
+    multiline:
+      pattern: ^\[
+      negate: false
+      match: after
+      max_lines: 500
+    exclude_lines: ["^DBG"]
+    include_lines: ["^ERR", "^WARN"]
+    exclude_files: [".gz$"]
+filebeat_general_opts:                # See below for example config options
+  registry_file: "{{ filebeat_data_dir }}/registry"
+filebeat_outputs:                     # See below for example config options
+  logstash:
+    hosts: [ "localhost:5044" ]
+  file:
+    path: "/tmp/filebeat"
+    filename: filebeat
+    rotate_every_kb: 10000
+    number_of_files: 7
+filebeat_shipper:                     # See below for example config options
+  name: myhostname
+  tags: [ "service-X", "webtier" ]
+filebeat_logging:                     # See below for example config options
+  to_syslog: true
+
+
+
+
+
+
+
+#########################################
+##    Example configuration options    ##
+#########################################
+##
+##  It is strongly advised that you familiarise yourself with filebeat config
+##  options: 
+##       https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-configuration-details.html
+##
+## filebeat_prospectors:
+##   - paths: ['/var/log/*.log', '/var/log/app.log']
+##     encoding: plain
+##     input_type: log
+##     exclude_lines: ["^DBG"]
+##     include_lines: ["^ERR", "^WARN"]
+##     exclude_files: [".gz$"]
+##     fields:
+##       level: debug
+##       review: 1
+##     fields_under_root: false
+##     ignore_older: 24h
+##     document_type: log
+##     scan_frequency: 10s
+##     harvester_buffer_size: 16384
+##     max_bytes: 10485760
+##     multiline:
+##       pattern: ^\[
+##       negate: false
+##       match: after
+##       max_lines: 500
+##       timeout: 5s
+##     tail_files: false
+##     backoff: 1s
+##     max_backoff: 10s
+##     backoff_factor: 2
+##     force_close_files: false
+## 
+##   - input_type: stdin
+## 
+## filebeat_general_options:
+##   spool_size: 2048
+##   idle_timeout: 5s
+##   registry_file: /var/lib/filebeat/registry
+##   config_dir: /etc/filebeat/conf.d
+## 
+## 
+## ############################# Output ##########################################
+## 
+## # Configure what outputs to use when sending the data collected by the beat.
+## # Multiple outputs may be used.
+## filebeat_outputs:
+## 
+##   ### Elasticsearch as output
+##   elasticsearch:
+##     hosts: ["localhost:9200"]
+##     # Optional protocol and basic auth credentials.
+##     protocol: "https"
+##     username: "admin"
+##     password: "s3cr3t"
+##     # Number of workers per Elasticsearch host.
+##     worker: 1
+##     # Optional index name. The default is "filebeat" and generates
+##     # [filebeat-]YYYY.MM.DD keys.
+##     index: "filebeat"
+##     # Optional HTTP Path
+##     #path: "/elasticsearch"
+##     # Proxy server url
+##     #proxy_url: http://proxy:3128
+##     max_retries: 3
+##     bulk_max_size: 50
+##     timeout: 90
+##     flush_interval: 1
+##     save_topology: false
+##     topology_expire: 15
+##     # tls configuration. By default is off.
+##     tls:
+##       # List of root certificates for HTTPS server verifications
+##       certificate_authorities: ["/etc/pki/root/ca.pem"]
+##       # Certificate for TLS client authentication
+##       certificate: "/etc/pki/client/cert.pem"
+##       # Client Certificate Key
+##       certificate_key: "/etc/pki/client/cert.key"
+##       insecure: true
+##       # Configure cipher suites to be used for TLS connections
+##       cipher_suites: []
+##       # Configure curve types for ECDHE based cipher suites
+##       curve_types: []
+##       # Configure minimum TLS version allowed for connection to logstash
+##       min_version: 1.0
+##       # Configure maximum TLS version allowed for connection to logstash
+##       max_version: 1.2
+## 
+##   ### Logstash as output
+##   logstash:
+##     # The Logstash hosts
+##     hosts: ["localhost:5044"]
+##     # Number of workers per Logstash host.
+##     worker: 1
+##     # Set gzip compression level.
+##     compression_level: 3
+##     # Optional load balance the events between the Logstash hosts
+##     loadbalance: true
+##     # Optional index name. The default index name depends on the each beat.
+##     # For Packetbeat, the default is set to packetbeat, for Topbeat
+##     # top topbeat and for Filebeat to filebeat.
+##     index: filebeat
+##     # Optional TLS. By default is off.
+##     tls:
+##       # List of root certificates for HTTPS server verifications
+##       certificate_authorities: ["/etc/pki/root/ca.pem"]
+##       # Certificate for TLS client authentication
+##       #certificate: "/etc/pki/client/cert.pem"
+##       # Client Certificate Key
+##       certificate_key: "/etc/pki/client/cert.key"
+##       # Controls whether the client verifies server certificates and host name.
+##       # If insecure is set to true, all server host names and certificates will be
+##       # accepted. In this mode TLS based connections are susceptible to
+##       # man-in-the-middle attacks. Use only for testing.
+##       insecure: true
+##       # Configure cipher suites to be used for TLS connections
+##       cipher_suites: ["ECDHE-ECDSA-AES256-CBC-SHA"]
+##       # Configure curve types for ECDHE based cipher suites
+##       curve_types: ["P-256"]
+## 
+##   ### File as output
+##   file:
+##     # Path to the directory where to save the generated files. The option is mandatory.
+##     path: "/tmp/filebeat"
+##     # Name of the generated files. The default is `filebeat` and it generates files: `filebeat`, `filebeat.1`, `filebeat.2`, etc.
+##     filename: filebeat
+##     # Maximum size in kilobytes of each file. When this size is reached, the files are
+##     # rotated. The default value is 10 MB.
+##     rotate_every_kb: 10000
+##     # Maximum number of files under path. When this number of files is reached, the
+##     # oldest file is deleted and the rest are shifted from last to first. The default
+##     # is 7 files.
+##     number_of_files: 7
+## 
+##   ### Console output
+##   console:
+##     # Pretty print json event
+##     pretty: false
+## 
+## ############################# Shipper #########################################
+## 
+## filebeat_shipper:
+##   name: myhostname
+##   tags: ["service-X", "web-tier"]
+##   ignore_outgoing: true
+##   refresh_topology_freq: 10
+##   topology_expire: 15
+##   queue_size: 1000
+##   geoip:
+##     paths:
+##       - "/usr/share/GeoIP/GeoLiteCity.dat"
+##       - "/usr/local/var/GeoIP/GeoLiteCity.dat"
+##  
+## ############################# Logging #########################################
+## 
+## # There are three options for the log ouput: syslog, file, stderr.
+## # Under Windos systems, the log files are per default sent to the file output,
+## # under all other system per default to syslog.
+## filebeat_logging:
+##   to_syslog: true
+##   to_files: false
+##   # To enable logging to files, to_files option has to be set to true
+##   files:
+##     # The directory where the log files will written to.
+##     path: /var/log/mybeat
+##     # The name of the files where the logs are written to.
+##     name: mybeat
+##     # Configure log file size limit. If limit is reached, log file will be
+##     # automatically rotated
+##     rotateeverybytes: 10485760 # = 10MB
+##     # Number of rotated log files to keep. Oldest files will be deleted first.
+##     keepfiles: 7
+##   # Enable debug output for selected components. To enable all selectors use ["*"]
+##   # Other available selectors are beat, publish, service
+##   # Multiple selectors can be chained.
+##   #selectors: [ ]
+##   # Sets log level. The default log level is error.
+##   # Available log levels are: critical, error, warning, info, debug
+##   level: error

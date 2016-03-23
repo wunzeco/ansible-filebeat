@@ -1,0 +1,55 @@
+---
+
+- name: Download and install filebeat apt public signing key
+  apt_key: url="{{ filebeat_signing_key_url }}" state=present
+
+- name: Add filebeat apt repository definition to apt sources list
+  apt_repository: repo="{{ filebeat_apt_repo }}" update_cache=yes state=present
+
+- name: Install filebeat
+  apt: name=filebeat state=present
+
+- name: Create tmp dir for filebeat config fragments
+  file: path="{{ filebeat_conf_fragments_dir }}" state=directory recurse=yes
+
+- name: Ensure filebeat config directory exists
+  file: 
+    path:   "{{ filebeat_conf_dir }}"
+    owner:  root
+    group:  root
+    mode:   0755 
+    state:  directory
+
+- name: Create filebeat prospectors and general config fragment
+  template: 
+    src:  filebeat_frag.yml.j2 
+    dest: "{{ filebeat_conf_fragments_dir }}/10-filebeat.yml"
+
+- name: Create filebeat outputs config fragment
+  template: 
+    src:  outputs_frag.yml.j2 
+    dest: "{{ filebeat_conf_fragments_dir }}/20-outputs.yml"
+
+- name: Create filebeat shipper config fragment
+  template: 
+    src:  shipper_frag.yml.j2 
+    dest: "{{ filebeat_conf_fragments_dir }}/30-shippers.yml"
+
+- name: Create filebeat logging config fragment
+  template:
+    src:  logging_frag.yml.j2 
+    dest: "{{ filebeat_conf_fragments_dir }}/40-logging.yml"
+
+- name: Create filebeat config file from assembled config fragments
+  assemble: 
+    src:   "{{ filebeat_conf_fragments_dir }}" 
+    dest:  "{{ filebeat_conf_dir }}/filebeat.yml"
+    owner: root
+    group: root
+    mode:  0644
+  notify:
+    - Validate filebeat config
+    - Restart filebeat
+
+- name: Start filebeat
+  service: name=filebeat enabled=yes state=started

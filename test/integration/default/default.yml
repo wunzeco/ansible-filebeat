@@ -1,0 +1,33 @@
+---
+- hosts: test-kitchen
+
+
+  vars:
+    filebeat_prospectors: 
+      - paths: [ "/var/log/*.log" ]
+      - paths: [ "/var/log/myapp.log" ]
+        multiline:
+          pattern: ^\[
+          negate: false
+          match: after
+          max_lines: 500
+        exclude_lines: ["^DBG"]
+        include_lines: ["^ERR", "^WARN"]
+        exclude_files: [".gz$"]
+    filebeat_general_opts:
+      registry_file: "{{ filebeat_data_dir }}/registry"
+    filebeat_outputs:
+      logstash:
+        hosts: [ "localhost:5044" ]
+      file:
+        path: "/tmp/filebeat"
+        filename: filebeat
+        rotate_every_kb: 10000
+        number_of_files: 7
+    filebeat_shipper:
+      tags: [ "service-X", "webtier" ]
+    filebeat_logging:
+      to_syslog: true
+
+  roles:
+    - ansible-filebeat

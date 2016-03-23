@@ -1,0 +1,33 @@
+############################# Logging #########################################
+
+# There are three options for the log ouput: syslog, file, stderr.
+# Under Windos systems, the log files are per default sent to the file output,
+# under all other system per default to syslog.
+logging:
+{% for key,value in filebeat_logging.iteritems() %}
+
+{%- if value is string or value is number or value is not iterable %}
+  {{ key }}: {{ value }}
+{# Check if value a list #}
+{% elif value is iterable and value is not mapping %}
+  {{ key }}:
+{% for v in value %}
+    - "{{ v }}"
+{% endfor -%}
+{# Check if value a dict #}
+{% elif value is mapping %}
+  {{ key }}:
+{% for k,v in value.iteritems() %}
+{% if v is string or v is number or v is not iterable %}
+    {{ k }}: {{ v }}
+{% else %}
+    {{ k }}: 
+{% for i in v %}
+      - "{{ i }}"
+{% endfor %}
+{% endif %}
+{% endfor -%}
+{% endif -%}
+
+{% endfor %}
+
