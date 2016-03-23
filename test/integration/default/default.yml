@@ -14,8 +14,6 @@
         exclude_lines: ["^DBG"]
         include_lines: ["^ERR", "^WARN"]
         exclude_files: [".gz$"]
-    filebeat_general_opts:
-      registry_file: "{{ filebeat_data_dir }}/registry"
     filebeat_outputs:
       logstash:
         hosts: [ "localhost:5044" ]
