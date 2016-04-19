@@ -1,7 +1,7 @@
 Filebeat
 ========
 
-Ansible role to install and configure Filebeat.
+Ansible role installs and configures Filebeat.
 
 
 ## Examples
