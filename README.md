@@ -38,6 +38,13 @@ Ansible role to install and configure Filebeat.
 ```
 
 
+> *Resources that may help with multiline config:*
+>    - For multiline config examples:
+>        https://www.elastic.co/guide/en/beats/filebeat/master/multiline-examples.html
+>    - To test regexp patterns:
+>        https://play.golang.org/p/uAd5XHxscu
+
+
 ## Dependencies:
 
 None
