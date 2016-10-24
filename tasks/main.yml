@@ -1,16 +1,13 @@
 ---
 
-- name: Download and install filebeat apt public signing key
-  apt_key: url="{{ filebeat_signing_key_url }}" state=present
-
-- name: Add filebeat apt repository definition to apt sources list
-  apt_repository: repo="{{ filebeat_apt_repo }}" update_cache=yes state=present
-
-- name: Install filebeat
-  apt: name=filebeat state=present
+- name: Filebeat Install
+  include: "install-{{ ansible_os_family|lower }}.yml"
 
 - name: Create tmp dir for filebeat config fragments
-  file: path="{{ filebeat_conf_fragments_dir }}" state=directory recurse=yes
+  file:
+    path:    "{{ filebeat_conf_fragments_dir }}"
+    state:   directory
+    recurse: yes
 
 - name: Ensure filebeat config directory exists
   file: 

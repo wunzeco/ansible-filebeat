@@ -45,6 +45,15 @@ Ansible role to install and configure Filebeat.
 >        https://play.golang.org/p/uAd5XHxscu
 
 
+## Testing
+
+To test this role, run:
+
+```
+kitchen test
+```
+
+
 ## Dependencies:
 
 None

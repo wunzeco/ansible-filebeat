@@ -1,0 +1,19 @@
+---
+
+- name: Download and install filebeat gpg public signing key
+  rpm_key:
+    key:   "{{ filebeat_signing_key_url }}"
+    state: present
+
+- name: Add filebeat yum repository for filebeat
+  template:
+    src:   filebeat.yum.repo.j2
+    dest:  /etc/yum.repos.d/filebeat.repo
+    owner: root
+    group: root
+    mode:  0644
+
+- name: Install filebeat
+  yum:
+    name:  "filebeat-{{ filebeat_version|default('*') }}"
+    state: present
