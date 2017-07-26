@@ -27,10 +27,10 @@
     src:  outputs_frag.yml.j2 
     dest: "{{ filebeat_conf_fragments_dir }}/20-outputs.yml"
 
-- name: Create filebeat shipper config fragment
+- name: Create filebeat general config fragment
   template: 
-    src:  shipper_frag.yml.j2 
-    dest: "{{ filebeat_conf_fragments_dir }}/30-shippers.yml"
+    src:  general_frag.yml.j2 
+    dest: "{{ filebeat_conf_fragments_dir }}/30-general.yml"
 
 - name: Create filebeat logging config fragment
   template:

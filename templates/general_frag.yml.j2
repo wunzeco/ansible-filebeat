@@ -1,33 +1,32 @@
-############################# Shipper #########################################
+############################# General #########################################
 
-shipper:
 {# I want to keep name opt at the top #}
-{% if filebeat_shipper.name|default(false) %}
-  name: {{ filebeat_shipper.name }}
+{% if filebeat_general.name|default(false) %}
+name: {{ filebeat_general.name }}
 {% endif -%}
 
-{% for key,value in filebeat_shipper.iteritems() %}
+{% for key,value in filebeat_general.iteritems() %}
 
 {%- if key == "name" %}
 {# skip name opt in this loop #}
 {% elif value is string or value is number or value is not iterable %}
-  {{ key }}: {{ value }}
+{{ key }}: {{ value }}
 {# Check if value a list #}
 {% elif value is iterable and value is not mapping %}
-  {{ key }}:
+{{ key }}:
 {% for v in value %}
-    - "{{ v }}"
+  - "{{ v }}"
 {% endfor -%}
 {# Check if value a dict #}
 {% elif value is mapping %}
-  {{ key }}:
+{{ key }}:
 {% for k,v in value.iteritems() %}
 {% if v is string or v is number or v is not iterable %}
-    {{ k }}: {{ v }}
+  {{ k }}: {{ v }}
 {% else %}
-    {{ k }}: 
+  {{ k }}: 
 {% for i in v %}
-      - "{{ i }}"
+    - "{{ i }}"
 {% endfor %}
 {% endif %}
 {% endfor -%}
