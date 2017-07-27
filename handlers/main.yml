@@ -2,7 +2,7 @@
 
 - name: Validate filebeat config
   shell: >
-    {{ filebeat_bin_dir }}/filebeat \
+    {{ filebeat_bin_dir }}/filebeat.sh \
         -c {{ filebeat_conf_dir }}/filebeat.yml \
         -e -configtest
 

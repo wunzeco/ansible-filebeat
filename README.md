@@ -1,8 +1,12 @@
 Filebeat
 ========
 
-Ansible role to install and configure Filebeat.
+Ansible role to install and configure Filebeat 5.x
 
+> WARNING:
+>    Support Filebeat v1.x removed. 
+>    Use an earlier version (git commit: 8cddaa0eab307ac168d690cfe9a9d26f93098530) 
+>    of this role for v1.x support
 
 ## Examples
 
@@ -21,14 +25,14 @@ Ansible role to install and configure Filebeat.
         exclude_lines: ["^DBG"]
         include_lines: ["^ERR", "^WARN"]
         exclude_files: [".gz$"]
-    filebeat_general_opts:
+    filebeat_global_opts:
       registry_file: "{{ filebeat_data_dir }}/registry"
     filebeat_outputs:
       logstash:
         hosts: [ "localhost:5044" ]
       file:
         path: "/tmp/filebeat"
-    filebeat_shipper:
+    filebeat_general:
       tags: [ "service-X", "webtier" ]
     filebeat_logging:
       to_syslog: true

@@ -38,9 +38,9 @@ filebeat:
 
 {% endfor %}
 
-  # General filebeat configuration options
+  # Global filebeat configuration options
   #
-{% for gkey,gvalue in filebeat_general_opts.iteritems() %}
+{% for gkey,gvalue in filebeat_global_opts.iteritems() %}
   {{ gkey }}: {{ gvalue }}
 {% endfor %}
 

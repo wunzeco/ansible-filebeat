@@ -22,7 +22,7 @@
         filename: filebeat
         rotate_every_kb: 10000
         number_of_files: 7
-    filebeat_shipper:
+    filebeat_general:
       tags: [ "service-X", "webtier" ]
     filebeat_logging:
       to_syslog: true
