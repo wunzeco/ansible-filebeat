@@ -2,15 +2,20 @@ require 'spec_helper'
 
 filebeat_conf_dir = '/etc/filebeat'
 filebeat_data_dir = '/var/lib/filebeat'
-filebeat_file_output_path = '/tmp/filebeat'
+filebeat_file_output_path = '/var/tmp/filebeat'
 
 describe package('filebeat') do
   it { should be_installed }
 end
 
+describe file(filebeat_data_dir) do
+  it { should be_directory }
+  it { should be_mode 750 }
+  it { should be_owned_by 'root' }
+end
+
 %W(
   #{filebeat_conf_dir}
-  #{filebeat_data_dir}
   #{filebeat_file_output_path}
 ).each do |d|
   describe file(d) do

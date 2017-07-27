@@ -6,8 +6,9 @@
 - name: Create tmp dir for filebeat config fragments
   file:
     path:    "{{ filebeat_conf_fragments_dir }}"
+    mode:    0755 
     state:   directory
-    recurse: yes
+    #recurse: yes
 
 - name: Ensure filebeat config directory exists
   file: 
