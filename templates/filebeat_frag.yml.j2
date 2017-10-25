@@ -22,7 +22,7 @@ filebeat:
 {% elif pvalue is iterable and pvalue is not mapping %}
       {{ pkey }}:
 {% for v in pvalue %}
-        - "{{ v }}"
+        - {{ v|tojson|safe }}
 {% endfor %}
 {# Check if pvalue a dict #}
 {% elif pvalue is mapping %}
