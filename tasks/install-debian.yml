@@ -15,3 +15,6 @@
   apt: 
     name:  "filebeat={{ filebeat_version|default('*') }}"
     state: present
+  notify:
+    - Validate filebeat config
+    - Restart filebeat
