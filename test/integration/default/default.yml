@@ -3,7 +3,8 @@
 
 
   vars:
-    filebeat_prospectors: 
+    filebeat_version: 6.1.1
+    filebeat_prospectors:
       - paths: [ "/var/log/*.log" ]
       - paths: [ "/var/log/myapp.log" ]
         multiline:
@@ -15,8 +16,6 @@
         include_lines: ["^ERR", "^WARN"]
         exclude_files: [".gz$"]
     filebeat_outputs:
-      logstash:
-        hosts: [ "localhost:5044" ]
       file:
         path: "/tmp/filebeat"
         filename: filebeat

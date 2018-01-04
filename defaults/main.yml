@@ -9,9 +9,12 @@ filebeat_conf_fragments_dir: /var/tmp/filebeat
 ############
 ##  Package
 filebeat_version: '*'                 # e.g. 5.5.1 or '*' for latest
-filebeat_signing_key_url: "https://packages.elastic.co/GPG-KEY-elasticsearch"
-filebeat_apt_repo: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
-filebeat_yum_repo_baseurl: "https://artifacts.elastic.co/packages/5.x/yum"
+filebeat_normalized_version: "{{ filebeat_version.split(':')|last + '.str' }}"   # adding '.str' to workaround "'float object' has no attribute 'split'" error
+filebeat_major_version:      "{{ filebeat_normalized_version.split('.')|first }}"
+filebeat_minor_version:      "{{ filebeat_normalized_version.split('.')[1] }}"
+filebeat_signing_key_url:    "https://packages.elastic.co/GPG-KEY-elasticsearch"
+filebeat_apt_repo:           "deb https://artifacts.elastic.co/packages/{{ filebeat_major_version }}.x/apt stable main"
+filebeat_yum_repo_baseurl:   "https://artifacts.elastic.co/packages/{{ filebeat_major_version }}.x/yum"
 
 
 ###########
@@ -54,7 +57,7 @@ filebeat_logging:                     # See below for example config options
 #########################################
 ##
 ##  It is strongly advised that you familiarise yourself with filebeat config
-##  options: 
+##  options:
 ##       https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-configuration-details.html
 ##
 ## filebeat_prospectors:
@@ -84,22 +87,22 @@ filebeat_logging:                     # See below for example config options
 ##     max_backoff: 10s
 ##     backoff_factor: 2
 ##     force_close_files: false
-## 
+##
 ##   - input_type: stdin
-## 
+##
 ## filebeat_global_opts:
 ##   spool_size: 2048
 ##   idle_timeout: 5s
 ##   registry_file: /var/lib/filebeat/registry
 ##   config_dir: /etc/filebeat/conf.d
-## 
-## 
+##
+##
 ## ############################# Output ##########################################
-## 
+##
 ## # Configure what outputs to use when sending the data collected by the beat.
 ## # Multiple outputs may be used.
 ## filebeat_outputs:
-## 
+##
 ##   ### Elasticsearch as output
 ##   elasticsearch:
 ##     hosts: ["localhost:9200"]
@@ -139,7 +142,7 @@ filebeat_logging:                     # See below for example config options
 ##       min_version: 1.0
 ##       # Configure maximum TLS version allowed for connection to logstash
 ##       max_version: 1.2
-## 
+##
 ##   ### Logstash as output
 ##   logstash:
 ##     # The Logstash hosts
@@ -171,7 +174,7 @@ filebeat_logging:                     # See below for example config options
 ##       cipher_suites: ["ECDHE-ECDSA-AES256-CBC-SHA"]
 ##       # Configure curve types for ECDHE based cipher suites
 ##       curve_types: ["P-256"]
-## 
+##
 ##   ### File as output
 ##   file:
 ##     # Path to the directory where to save the generated files. The option is mandatory.
@@ -185,14 +188,14 @@ filebeat_logging:                     # See below for example config options
 ##     # oldest file is deleted and the rest are shifted from last to first. The default
 ##     # is 7 files.
 ##     number_of_files: 7
-## 
+##
 ##   ### Console output
 ##   console:
 ##     # Pretty print json event
 ##     pretty: false
-## 
+##
 ## ############################# General #########################################
-## 
+##
 ## filebeat_general:
 ##   name: myhostname
 ##   tags: ["service-X", "web-tier"]
@@ -204,9 +207,9 @@ filebeat_logging:                     # See below for example config options
 ##     paths:
 ##       - "/usr/share/GeoIP/GeoLiteCity.dat"
 ##       - "/usr/local/var/GeoIP/GeoLiteCity.dat"
-##  
+##
 ## ############################# Logging #########################################
-## 
+##
 ## # There are three options for the log ouput: syslog, file, stderr.
 ## # Under Windos systems, the log files are per default sent to the file output,
 ## # under all other system per default to syslog.
