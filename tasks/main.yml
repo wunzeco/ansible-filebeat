@@ -38,7 +38,7 @@
     src:  logging_frag.yml.j2 
     dest: "{{ filebeat_conf_fragments_dir }}/40-logging.yml"
 
-- name: Create filebeat config file from assembled config fragments
+- name: Create filebeat config file from assembled config fragments v5
   assemble: 
     src:   "{{ filebeat_conf_fragments_dir }}" 
     dest:  "{{ filebeat_conf_dir }}/filebeat.yml"
@@ -46,8 +46,21 @@
     group: root
     mode:  0644
   notify:
-    - Validate filebeat config
+    - Validate filebeat config v5
     - Restart filebeat
+  when: filebeat_major_version == "5"
+
+- name: Create filebeat config file from assembled config fragments v6
+  assemble:
+    src:   "{{ filebeat_conf_fragments_dir }}"
+    dest:  "{{ filebeat_conf_dir }}/filebeat.yml"
+    owner: root
+    group: root
+    mode:  0644
+  notify:
+    - Validate filebeat config v6
+    - Restart filebeat
+  when: filebeat_major_version == "6"
 
 - name: Start filebeat
   service: name=filebeat enabled=yes state=started

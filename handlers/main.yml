@@ -1,14 +1,14 @@
 ---
 
-- name: Validate filebeat config
+- name: Validate filebeat config v5
   shell: >
-    if [[ -f {{ filebeat_bin_dir }}/filebeat.sh ]] ; then
         {{ filebeat_bin_dir }}/filebeat.sh \
         -c {{ filebeat_conf_dir }}/filebeat.yml \
         -e -configtest
-    else
+
+- name: Validate filebeat config v6
+  shell: >
         {{ filebeat_bin_dir }}/filebeat test config
-    fi
 
 - name: Restart filebeat
   service: name=filebeat state=restarted
