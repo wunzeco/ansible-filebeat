@@ -1,12 +1,7 @@
 Filebeat
 ========
 
-Ansible role to install and configure Filebeat 5.x
-
-> WARNING:
->    Support Filebeat v1.x removed. 
->    Use an earlier version (git commit: 8cddaa0eab307ac168d690cfe9a9d26f93098530) 
->    of this role for v1.x support
+Ansible role to install and configure Filebeat 5+
 
 ## Examples
 
@@ -14,6 +9,7 @@ Ansible role to install and configure Filebeat 5.x
 - hosts: myhost
 
   vars:
+    filebeat_version: 5.6.5
     filebeat_prospectors:
       - paths: [ "/var/log/*.log" ]
       - paths: [ "/var/log/myapp/myapp.log" ]

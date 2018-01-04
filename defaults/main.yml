@@ -8,7 +8,7 @@ filebeat_conf_fragments_dir: /var/tmp/filebeat
 
 ############
 ##  Package
-filebeat_version: '*'                 # e.g. 5.5.1 or '*' for latest
+filebeat_version: '5.6.5'
 filebeat_normalized_version: "{{ filebeat_version.split(':')|last + '.str' }}"   # adding '.str' to workaround "'float object' has no attribute 'split'" error
 filebeat_major_version:      "{{ filebeat_normalized_version.split('.')|first }}"
 filebeat_minor_version:      "{{ filebeat_normalized_version.split('.')[1] }}"
