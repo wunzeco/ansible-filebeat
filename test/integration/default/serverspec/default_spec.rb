@@ -31,21 +31,15 @@ describe file("#{filebeat_conf_dir}/filebeat.yml") do
   it { should be_owned_by 'root' }
 end
 
-describe file('/etc/init.d/filebeat') do
-  it { should be_file }
-  it { should be_mode 755 }
-  it { should be_owned_by 'root' }
-end
-
 service_startup_file = '/lib/systemd/system/filebeat.service'
-if os[:family] == 'ubuntu' and os[:release] == '14.04'
+if os[:family] =~ /redhat|centos/
+  service_startup_file = '/usr/lib/systemd/system/filebeat.service'
+elsif os[:family] == 'ubuntu' and os[:release] == '14.04'
   service_startup_file = '/etc/init.d/filebeat'
   describe file(service_startup_file) do
     it { should be_executable }
     it { should be_owned_by 'root' }
   end
-elsif os[:family] =~ /redhat|centos/
-  service_startup_file = '/usr/lib/systemd/system/filebeat.service'
 end
 
 describe file(service_startup_file) do
