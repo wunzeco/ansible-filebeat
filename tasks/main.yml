@@ -40,7 +40,7 @@
 
 - name: Set filebeat config validate command | v5
   set_fact:
-    filebeat_conf_validate_cmd: "{{ filebeat_conf_validate_cmd_v5 }}"
+    filebeat_config_validate_cmd: "{{ filebeat_config_validate_cmd_v5 }}"
   when: filebeat_major_version == "5"
 
 - name: Create filebeat config file from assembled config fragments

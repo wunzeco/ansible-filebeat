@@ -47,8 +47,8 @@ filebeat_logging:                     # See below for example config options
   to_syslog: true
 
 
-filebeat_conf_validate_cmd: "{{ filebeat_bin_dir }}/filebeat test config"
-filebeat_conf_validate_cmd_v5: "{{ filebeat_bin_dir }}/filebeat.sh -c {{ filebeat_conf_dir }}/filebeat.yml -e -configtest"
+filebeat_config_validate_cmd: "{{ filebeat_bin_dir }}/filebeat test config"
+filebeat_config_validate_cmd_v5: "{{ filebeat_bin_dir }}/filebeat.sh -c {{ filebeat_conf_dir }}/filebeat.yml -e -configtest"
 
 
 
