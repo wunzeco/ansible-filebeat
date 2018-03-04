@@ -8,7 +8,7 @@ filebeat_conf_fragments_dir: /var/tmp/filebeat
 
 ############
 ##  Package
-filebeat_version: '5.6.5'
+filebeat_version: '6.2.2'
 filebeat_normalized_version: "{{ filebeat_version.split(':')|last + '.str' }}"   # adding '.str' to workaround "'float object' has no attribute 'split'" error
 filebeat_major_version:      "{{ filebeat_normalized_version.split('.')|first }}"
 filebeat_minor_version:      "{{ filebeat_normalized_version.split('.')[1] }}"
@@ -47,8 +47,8 @@ filebeat_logging:                     # See below for example config options
   to_syslog: true
 
 
-
-
+filebeat_conf_validate_cmd: "{{ filebeat_bin_dir }}/filebeat test config"
+filebeat_conf_validate_cmd_v5: "{{ filebeat_bin_dir }}/filebeat.sh -c {{ filebeat_conf_dir }}/filebeat.yml -e -configtest"
 
 
 
