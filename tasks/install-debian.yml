@@ -11,21 +11,10 @@
     update_cache: yes
     state:        present
 
-- name: Install filebeat v5
-  apt: 
-    name:  "filebeat={{ filebeat_version|default('*') }}"
-    state: present
-  notify:
-    - Validate filebeat config v5
-    - Restart filebeat
-  when: filebeat_major_version == "5"
-
-
-- name: Install filebeat v6
+- name: Install filebeat
   apt:
     name:  "filebeat={{ filebeat_version|default('*') }}"
     state: present
   notify:
-    - Validate filebeat config v6
+    - Validate filebeat config
     - Restart filebeat
-  when: filebeat_major_version == "6"
