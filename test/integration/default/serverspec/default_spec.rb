@@ -37,6 +37,22 @@ describe file('/etc/init.d/filebeat') do
   it { should be_owned_by 'root' }
 end
 
+service_startup_file = '/lib/systemd/system/filebeat.service'
+if os[:family] == 'ubuntu' and os[:release] == '14.04'
+  service_startup_file = '/etc/init.d/filebeat'
+  describe file(service_startup_file) do
+    it { should be_executable }
+    it { should be_owned_by 'root' }
+  end
+elsif os[:family] =~ /redhat|centos/
+  service_startup_file = '/usr/lib/systemd/system/filebeat.service'
+end
+
+describe file(service_startup_file) do
+  it { should be_file }
+  it { should be_owned_by 'root' }
+end
+
 describe service('filebeat') do
   it { should be_running }
 end

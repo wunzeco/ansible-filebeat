@@ -9,7 +9,7 @@ Ansible role to install and configure Filebeat 5+
 - hosts: myhost
 
   vars:
-    filebeat_version: 5.6.5
+    filebeat_version: 6.2.2
     filebeat_prospectors:
       - paths: [ "/var/log/*.log" ]
       - paths: [ "/var/log/myapp/myapp.log" ]

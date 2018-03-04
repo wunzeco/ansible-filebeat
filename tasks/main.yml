@@ -6,51 +6,44 @@
 - name: Create tmp dir for filebeat config fragments
   file:
     path:    "{{ filebeat_conf_fragments_dir }}"
-    mode:    0755 
+    mode:    0755
     state:   directory
     #recurse: yes
 
 - name: Ensure filebeat config directory exists
-  file: 
+  file:
     path:   "{{ filebeat_conf_dir }}"
     owner:  root
     group:  root
-    mode:   0755 
+    mode:   0755
     state:  directory
 
 - name: Create filebeat prospectors and general config fragment
-  template: 
-    src:  filebeat_frag.yml.j2 
+  template:
+    src:  filebeat_frag.yml.j2
     dest: "{{ filebeat_conf_fragments_dir }}/10-filebeat.yml"
 
 - name: Create filebeat outputs config fragment
-  template: 
-    src:  outputs_frag.yml.j2 
+  template:
+    src:  outputs_frag.yml.j2
     dest: "{{ filebeat_conf_fragments_dir }}/20-outputs.yml"
 
 - name: Create filebeat general config fragment
-  template: 
-    src:  general_frag.yml.j2 
+  template:
+    src:  general_frag.yml.j2
     dest: "{{ filebeat_conf_fragments_dir }}/30-general.yml"
 
 - name: Create filebeat logging config fragment
   template:
-    src:  logging_frag.yml.j2 
+    src:  logging_frag.yml.j2
     dest: "{{ filebeat_conf_fragments_dir }}/40-logging.yml"
 
-- name: Create filebeat config file from assembled config fragments v5
-  assemble: 
-    src:   "{{ filebeat_conf_fragments_dir }}" 
-    dest:  "{{ filebeat_conf_dir }}/filebeat.yml"
-    owner: root
-    group: root
-    mode:  0644
-  notify:
-    - Validate filebeat config v5
-    - Restart filebeat
+- name: Set filebeat config validate command | v5
+  set_fact:
+    filebeat_conf_validate_cmd: "{{ filebeat_conf_validate_cmd_v5 }}"
   when: filebeat_major_version == "5"
 
-- name: Create filebeat config file from assembled config fragments v6
+- name: Create filebeat config file from assembled config fragments
   assemble:
     src:   "{{ filebeat_conf_fragments_dir }}"
     dest:  "{{ filebeat_conf_dir }}/filebeat.yml"
@@ -58,9 +51,8 @@
     group: root
     mode:  0644
   notify:
-    - Validate filebeat config v6
+    - Validate filebeat config
     - Restart filebeat
-  when: filebeat_major_version == "6"
 
 - name: Start filebeat
   service: name=filebeat enabled=yes state=started
